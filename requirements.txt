@@ -4,9 +4,9 @@ sentence-transformers==2.5.1
 langchain==0.1.13
 langchain-community==0.0.29
 pydantic==2.6.4
-instructor==1.0.0
+instructor>=1.0.0
 python-dotenv==1.0.1
-docling==1.15.0 
+docling>=1.15.0 
 tqdm==4.66.2
 streamlit>=1.30.0
 plotly>=5.18.0
