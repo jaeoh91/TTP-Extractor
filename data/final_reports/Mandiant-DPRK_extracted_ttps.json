@@ -1,0 +1,259 @@
+{
+    "source_report": "data/raw_reports/Mandiant-DPRK.pdf",
+    "total_chunks_analyzed": 28,
+    "total_ttps_found": 42,
+    "extracted_ttps": [
+        {
+            "t_id": "T1195.001",
+            "name": "Compromise Software Dependencies and Development Tools",
+            "context_indicators": "An attacker introduced a malicious dependency named \"plain-crypto-js\" into axios NPM releases versions 1.14.1 and 0.30.4, compromising the widely used software package.",
+            "source_chunk_index": 0
+        },
+        {
+            "t_id": "T1204.005",
+            "name": "Malicious Library",
+            "context_indicators": "The malicious dependency \"plain-crypto-js\" introduced into axios NPM releases is described as an \"obfuscated dropper that deploys the WAVESHAPER.V2 backdoor,\" functioning as a malicious library.",
+            "source_chunk_index": 0
+        },
+        {
+            "t_id": "T1608.001",
+            "name": "Upload Malware",
+            "context_indicators": "The attacker introduced a malicious dependency, an \"obfuscated dropper that deploys the WAVESHAPER.V2 backdoor,\" into axios NPM releases, effectively uploading malware to the NPM package library.",
+            "source_chunk_index": 0
+        },
+        {
+            "t_id": "T1190",
+            "name": "Exploit Public-Facing Application",
+            "context_indicators": "The maintainer account associated with the legitimate axios package was compromised, leading to the introduction of a malicious dependency (plaincrypto-js version 4.2.1). This indicates an initial account compromise, likely through exploiting a weakness in a public-facing application or service related to package management or account authentication.",
+            "source_chunk_index": 1
+        },
+        {
+            "t_id": "T1668",
+            "name": "Exclusive Control",
+            "context_indicators": "After compromising the maintainer account for the axios package, the attacker changed the associated email address to an attacker-controlled account (ifstap@proton.me). This action was taken to maintain exclusive control over the compromised account and prevent the legitimate maintainer from regaining access.",
+            "source_chunk_index": 1
+        },
+        {
+            "t_id": "T1546.016",
+            "name": "Installer Packages",
+            "context_indicators": "The threat actor used the postinstall hook within the \"package.json\" file of the malicious dependency to achieve silent execution. Upon installation of the compromised axios package, NPM automatically executes an obfuscated JavaScript dropper named \"setup.js\" in the background via the \"postinstall\": \"node setup.js\" script.",
+            "source_chunk_index": 2
+        },
+        {
+            "t_id": "T1204.005",
+            "name": "Malicious Library",
+            "context_indicators": "The threat actor relied on users installing a malicious library, specifically a \"compromised axios package\" and the \"plain-crypto-js package\", which served as a payload delivery vehicle. These were distributed via NPM, leading to the execution of the \"setup.js\" dropper.",
+            "source_chunk_index": 2
+        },
+        {
+            "t_id": "T1195.001",
+            "name": "Compromise Software Dependencies and Development Tools",
+            "context_indicators": "The threat actor manipulated software dependencies by compromising the \"axios package\" and creating the \"plain-crypto-js package\" as a malicious dependency. These were distributed via NPM to deliver malicious code to consumers.",
+            "source_chunk_index": 2
+        },
+        {
+            "t_id": "T1027.010",
+            "name": "Command Obfuscation",
+            "context_indicators": "The script uses a custom XOR and Base64-based string obfuscation routine to conceal the command-and-control (C2 or C&amp;C) URL and host OS execution commands.",
+            "source_chunk_index": 3
+        },
+        {
+            "t_id": "T1620",
+            "name": "Reflective Code Loading",
+            "context_indicators": "To evade static analysis, it dynamically loads fs , os , and execSync .",
+            "source_chunk_index": 3
+        },
+        {
+            "t_id": "T1059.001",
+            "name": "PowerShell",
+            "context_indicators": "The dropper actively hunts for the native powershell.exe",
+            "source_chunk_index": 3
+        },
+        {
+            "t_id": "T1105",
+            "name": "Ingress Tool Transfer",
+            "context_indicators": "On Windows, the dropper downloads a PowerShell script via curl using the POST body packages.npm.org/product1 and saves it to %TEMP%\\6202033.ps1. The command observed is 'cmd.exe /c curl -s -X POST -d packages.npm.org/prod'.",
+            "source_chunk_index": 4
+        },
+        {
+            "t_id": "T1059.001",
+            "name": "PowerShell",
+            "context_indicators": "On Windows, a copied powershell.exe (named wt.exe) is used to execute the downloaded PowerShell script with hidden and execution policy bypass flags. The command observed is '%PROGRAMDATA%\\wt.exe -w hidden -ep by'.",
+            "source_chunk_index": 4
+        },
+        {
+            "t_id": "T1105",
+            "name": "Ingress Tool Transfer",
+            "context_indicators": "On macOS, the malware uses bash and curl to download a native MachO binary payload to /Library/Caches/com.apple.act.mond using the POST body packages.npm.org/product0.",
+            "source_chunk_index": 4
+        },
+        {
+            "t_id": "T1064",
+            "name": "Scripting",
+            "context_indicators": "The 'runscript' command decodes and executes a provided AppleScript payload, which is a direct form of scripting.",
+            "source_chunk_index": 8
+        },
+        {
+            "t_id": "T1059.002",
+            "name": "AppleScript",
+            "context_indicators": "The 'runscript' module decodes and executes a provided AppleScript payload.",
+            "source_chunk_index": 9
+        },
+        {
+            "t_id": "T1027.008",
+            "name": "Stripped Payloads",
+            "context_indicators": "The 'runscript' module decodes a provided AppleScript payload. The act of decoding suggests the AppleScript was in an obfuscated or stripped format, such as a run-only AppleScript, to hinder analysis.",
+            "source_chunk_index": 9
+        },
+        {
+            "t_id": "T1106",
+            "name": "Native API",
+            "context_indicators": "The 'peinject' module executes an arbitrary binary payload, which typically involves interacting with native OS APIs to start processes.",
+            "source_chunk_index": 9
+        },
+        {
+            "t_id": "T1027.008",
+            "name": "Stripped Payloads",
+            "context_indicators": "The 'peinject' module decodes an arbitrary binary payload. The need for decoding indicates the binary was likely obfuscated or stripped to impede analysis.",
+            "source_chunk_index": 9
+        },
+        {
+            "t_id": "T1547.001",
+            "name": "Registry Run Keys / Startup Folder",
+            "context_indicators": "Persistence is achieved by adding a new entry named MicrosoftUpdate to HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run to launch a hidden batch file (%PROGRAMDATA%\\system.bat) at logon.",
+            "source_chunk_index": 10
+        },
+        {
+            "t_id": "T1195.001",
+            "name": "Compromise Software Dependencies and Development Tools",
+            "context_indicators": "North Korea-nexus actors launched attacks impacting popular packages like axios, which are relied upon as dependencies. UNC6780 (TeamPCP) recently poisoned GitHub Actions and PyPI packages associated with projects like Trivy, Checkmarx, and LiteLLM.",
+            "source_chunk_index": 12
+        },
+        {
+            "t_id": "T1608.001",
+            "name": "Upload Malware",
+            "context_indicators": "UNC6780 (TeamPCP) poisoned GitHub Actions and PyPI packages associated with projects like Trivy, Checkmarx, and LiteLLM to deploy the SANDCLOCK credential stealer.",
+            "source_chunk_index": 12
+        },
+        {
+            "t_id": "T1195",
+            "name": "Supply Chain Compromise",
+            "context_indicators": "The report explicitly states 'Supply chain compromise is a particularly dangerous tactic' and describes it as abusing trust in 'hardware, software, and updates supplied by reputable vendors as well as the trust they may not realize they are placing in collaborative code-sharing communities.' This sets the general stage for the attack.",
+            "source_chunk_index": 13
+        },
+        {
+            "t_id": "T1195.002",
+            "name": "Compromise Software Supply Chain",
+            "context_indicators": "The report specifically mentions 'organizations using the axios package' and 'auditing dependency trees for compromised versions,' which points to the manipulation of application software or its distribution within the supply chain.",
+            "source_chunk_index": 13
+        },
+        {
+            "t_id": "T1195.001",
+            "name": "Compromise Software Dependencies and Development Tools",
+            "context_indicators": "The report directly advises 'all developers and organizations using the axios package to take immediate corrective action' and to prioritize 'auditing dependency trees for compromised versions.' The 'axios' package is a software dependency, and the mention of 'dependency trees' confirms this sub-technique.",
+            "source_chunk_index": 13
+        },
+        {
+            "t_id": "T1204.005",
+            "name": "Malicious Library",
+            "context_indicators": "The advice to audit 'dependency trees for compromised versions' of the 'axios package' implies that users may have installed or are using a malicious version of a library, leading to potential execution of malicious code.",
+            "source_chunk_index": 13
+        },
+        {
+            "t_id": "T1195.001",
+            "name": "Compromise Software Dependencies and Development Tools",
+            "context_indicators": "Adversaries have manipulated software dependencies, specifically 'axios' (versions 1.14.1 or 0.30.4) and 'plain-crypto-js' (versions 4.2.0 or 4.2.1), by introducing malicious versions into repositories. This behavior also extends to potentially targeting CI/CD pipelines by making these malicious 'latest' versions available for pulling.",
+            "source_chunk_index": 14
+        },
+        {
+            "t_id": "T1204.005",
+            "name": "Malicious Library",
+            "context_indicators": "Adversaries have created or modified libraries, such as 'axios' (versions 1.14.1 or 0.30.4) and 'plain-crypto-js' (versions 4.2.0 or 4.2.1), to be malicious. The presence of 'plain-crypto-js' is explicitly stated to compromise the host environment, indicating that adversaries rely on users installing these malicious libraries to facilitate execution.",
+            "source_chunk_index": 14
+        },
+        {
+            "t_id": "T1195",
+            "name": "Supply Chain Compromise",
+            "context_indicators": "Adversaries have compromised the software supply chain by introducing malicious versions of dependencies ('axios' and 'plain-crypto-js') into package managers like NPM. This manipulation affects corporate-managed NPM repositories and CI/CD deployments, leading to potential system compromise if these malicious packages are installed or pulled.",
+            "source_chunk_index": 14
+        },
+        {
+            "t_id": "T1602",
+            "name": "Data from Configuration Repository",
+            "context_indicators": "The report recommends migrating 'plaintext secrets to the OS keychain using aws-vault' to ensure 'compromised packages cannot programmatically scrape credentials'. This indicates that an adversary, through a compromised package, would attempt to collect credentials, which are a form of sensitive configuration data often stored in repositories or keychains.",
+            "source_chunk_index": 16
+        },
+        {
+            "t_id": "T1671",
+            "name": "Cloud Application Integration",
+            "context_indicators": "The report advises to 'Rotate all tokens and API keys used by applications con $ rmed to have run indicators of compromise (IOCs)'. This implies that an adversary, having compromised an application, may have used or attempted to use its associated tokens and API keys to leverage cloud application integrations for malicious purposes.",
+            "source_chunk_index": 16
+        },
+        {
+            "t_id": "T1608",
+            "name": "Stage Capabilities",
+            "context_indicators": "The report excerpt explicitly mentions 'Windows Stage 1' and 'Native Binary' associated with 'WAVESHAPER.V2', indicating that the adversary is setting up initial capabilities or components for their operation.",
+            "source_chunk_index": 20
+        },
+        {
+            "t_id": "T1032",
+            "name": "Standard Cryptographic Protocol",
+            "context_indicators": "The file \"plain- crypto-js- 4.2.1.tgz\" indicates the presence and potential use of the `crypto-js` JavaScript library, which implements standard cryptographic protocols.",
+            "source_chunk_index": 22
+        },
+        {
+            "t_id": "T1573.001",
+            "name": "Symmetric Cryptography",
+            "context_indicators": "The file \"plain- crypto-js- 4.2.1.tgz\" suggests the use of the `crypto-js` library, which includes implementations of standard symmetric encryption algorithms (e.g., AES, DES), indicating the adversary is employing symmetric cryptography.",
+            "source_chunk_index": 22
+        },
+        {
+            "t_id": "T1059.001",
+            "name": "PowerShell",
+            "context_indicators": "The threat actor explicitly invokes PowerShell using the command `start /min powershell -w h`. The rule name `G_Hunting_Downloader_suspected_UNC1069_PS_1` also indicates PowerShell usage, and `Invoke-WebRequest` is a PowerShell cmdlet used for downloading content.",
+            "source_chunk_index": 24
+        },
+        {
+            "t_id": "T1027.010",
+            "name": "Command Obfuscation",
+            "context_indicators": "The PowerShell command uses `[scriptblock]::Create([System.Text.Encoding]::UTF` to create a script block from encoded text, which is a method to obfuscate the actual commands being executed, making them more difficult to analyze.",
+            "source_chunk_index": 24
+        },
+        {
+            "t_id": "T1027.010",
+            "name": "Command Obfuscation",
+            "context_indicators": "The YARA rule description explicitly states \"Detects the obfuscated version of the JS\". The strings `$ss3` through `$ss7` demonstrate command obfuscation by embedding placeholder characters (`^`, `_`, `-`, `(`) within what appear to be base64-encoded strings, which are later replaced by `=` characters. For example, `\"d2hlcmUgcG93ZXJzaGVsbA((\".replaceAll(\"(\",\"=\")` obfuscates the base64 string for \"where powershell\" by replacing `(` with `=`.",
+            "source_chunk_index": 25
+        },
+        {
+            "t_id": "T1140",
+            "name": "Deobfuscate/Decode Files or Information",
+            "context_indicators": "The YARA rule description mentions \"Detects the obfuscated version of the JS\". The strings `$ss3` through `$ss7` explicitly show deobfuscation/decoding mechanisms using JavaScript's `replaceAll` function to replace placeholder characters (`^`, `_`, `-`, `(`) with `=` to complete base64 strings (e.g., `\"TE9DQUw^\".replaceAll(\"^\",\"=\")`). Additionally, string `$ss2` uses `String.fromCharCode(S^a^333)`, which is a JavaScript function used to construct strings from character codes, serving as a decoding mechanism for obfuscated information.",
+            "source_chunk_index": 25
+        },
+        {
+            "t_id": "T1195",
+            "name": "Supply Chain Compromise",
+            "context_indicators": "The report explicitly states \"Axios NPM Distribution Compromised in Supply Chain Attack\" and \"North Korea-Nexus Threat Actor Compromises Widely Used Axios NPM Package\", indicating manipulation of a software distribution mechanism.",
+            "source_chunk_index": 26
+        },
+        {
+            "t_id": "T1587.001",
+            "name": "Malware",
+            "context_indicators": "The report mentions \"UNC6692 Employed Social Engineering to Deploy a Custom Malware Suite\", directly indicating the development or creation of malicious software.",
+            "source_chunk_index": 26
+        },
+        {
+            "t_id": "T1587.001",
+            "name": "Malware",
+            "context_indicators": "UNC6692 developed a 'Custom Malware Suite'.",
+            "source_chunk_index": 27
+        },
+        {
+            "t_id": "T1608.001",
+            "name": "Upload Malware",
+            "context_indicators": "UNC6692 deployed their custom malware suite, implying it was made accessible for targeting.",
+            "source_chunk_index": 27
+        }
+    ]
+}
