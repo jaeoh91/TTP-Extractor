@@ -11,6 +11,7 @@ import plotly.express as px
 import os
 import sys
 from pathlib import Path
+import textwrap
 
 # Explicitly add the project root to sys.path so modules like src.pipeline are found reliably on cloud instances
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -131,15 +132,29 @@ if selected_report:
             # Combine t_id and name for better labeling
             ttp_counts['technique_label'] = ttp_counts['t_id'] + ": " + ttp_counts['name']
             
+            # Create a wrapped version for the treemap to fit better inside the blocks
+            ttp_counts['technique_label_wrapped'] = ttp_counts['technique_label'].apply(lambda x: '<br>'.join(textwrap.wrap(x, width=20)))
+            
             fig = px.bar(ttp_counts, x='technique_label', y='Count', color='tactic', 
                          title="Frequency of Extracted Techniques by Tactic", 
                          hover_data=['t_id', 'name', 'tactic'],
                          category_orders={'tactic': mitre_tactics},
                          color_discrete_sequence=px.colors.qualitative.Set2)
+            
+            # Make x-axis labels strictly vertical (-90 degrees) and increase the overall chart height generously so bars aren't cramped
+            fig.update_layout(
+                xaxis_tickangle=-90, 
+                height=900,
+                margin=dict(b=300) # Ensure enough bottom margin for the long vertical text
+            )
                          
-            # Optionally add a Treemap representation
-            fig_tree = px.treemap(ttp_counts, path=['tactic', 'technique_label'], values='Count',
+            # Optionally add a Treemap representation, using the wrapped labels
+            fig_tree = px.treemap(ttp_counts, path=['tactic', 'technique_label_wrapped'], values='Count',
                                   title="Tactic to Technique Treemap")
+                                  
+            # Increase the font size for readability and expand the height of the treemap
+            fig_tree.update_traces(textfont=dict(size=18))
+            fig_tree.update_layout(height=700)
             
             st.plotly_chart(fig, width='stretch')
             st.plotly_chart(fig_tree, width='stretch')
