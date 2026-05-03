@@ -20,8 +20,17 @@ class APIKeyManager:
     def __init__(self):
         # Support either plural GEMINI_API_KEYS (comma separated) or singular GEMINI_API_KEY
         keys_str = os.environ.get("GEMINI_API_KEYS") or os.environ.get("GEMINI_API_KEY")
+        
+        # Fallback to Streamlit secrets if running in Streamlit Cloud
         if not keys_str:
-            raise ValueError("No API keys found. Please set GEMINI_API_KEYS in your .env file.")
+            try:
+                import streamlit as st
+                keys_str = st.secrets.get("GEMINI_API_KEYS") or st.secrets.get("GEMINI_API_KEY")
+            except (ImportError, FileNotFoundError, Exception):
+                pass
+                
+        if not keys_str:
+            raise ValueError("No API keys found. Please set GEMINI_API_KEYS in your .env file or Streamlit Cloud Secrets.")
         
         # Parse comma-separated keys and remove empty strings/whitespace
         self.keys = [k.strip() for k in keys_str.split(",") if k.strip()]
