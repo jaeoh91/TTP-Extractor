@@ -1,0 +1,91 @@
+{
+    "source_report": "data/raw_reports/China Espionage Claims.pdf",
+    "total_chunks_analyzed": 42,
+    "total_ttps_found": 14,
+    "extracted_ttps": [
+        {
+            "t_id": "T1683.001",
+            "name": "Written Content",
+            "context_indicators": "China launched an offensive media strategy to push narratives around US hacking operations. PRC cybersecurity companies coordinate report publication with government agencies and state media to amplify impact. These reports and allegations, often lacking technical analysis and recycling old intelligence documents, are released in state media to disclose accounts of western spying and push specific narratives.",
+            "source_chunk_index": 1
+        },
+        {
+            "t_id": "T1584",
+            "name": "Compromise Infrastructure",
+            "context_indicators": "A PRC hacking team was taking advantage of four vulnerabilities in Microsoft Exchange Servers, effectively compromising this infrastructure. This compromise was then leveraged to automate their attack for scale.",
+            "source_chunk_index": 2
+        },
+        {
+            "t_id": "T1681",
+            "name": "Search Threat Vendor Data",
+            "context_indicators": "China's Ministry of Foreign Affairs lashed out at Mandiant's report on UNC4841's hack of Barracuda products, calling it 'unprofessional.' This reaction, coupled with subsequent efforts to conceal hacking targets (e.g., renaming 'iPhone' to 'another country's phone' at the Tianfu Cup), indicates awareness and adaptation to public threat intelligence about their own operations.",
+            "source_chunk_index": 5
+        },
+        {
+            "t_id": "T1683.001",
+            "name": "Written Content",
+            "context_indicators": "Organizers of the Tianfu Cup cybersecurity competition stopped explicitly naming the iPhone as a target, instead using the phrase 'another country's phone' to conceal the real target. The Ministry of Foreign Affairs spokesperson also called Mandiant's report 'unprofessional' at a press conference, implying prepared statements. Chinese policy leaders were also irked by a 'jointly issued statement,' leading them to pivot to offense to change public opinion.",
+            "source_chunk_index": 5
+        },
+        {
+            "t_id": "T1684",
+            "name": "Social Engineering",
+            "context_indicators": "China engaged in 'outright denial' of hacking reports and 'shouted down cybersecurity experts' to 'limit inflammatory information about its hacking capabilities.' They also 'pivoted to offense in the hopes of changing global public opinion,' using tactics like concealing targets and discrediting reports to influence public perception and reduce scrutiny.",
+            "source_chunk_index": 5
+        },
+        {
+            "t_id": "T1681",
+            "name": "Search Threat Vendor Data",
+            "context_indicators": "The text describes a 'review of threat intelligence publications from three prominent cybersecurity firms--Qihoo360, Qi An Xin, Antiy--and the China Cybersecurity Industry Alliance, Ministry of Foreign Affairs, and the National Computer Virus Emergency Response Center (CVERC)' to understand 'China's cyber threat intelligence and media strategy on US hacking operations'. This indicates an adversary (China) seeking information from threat intelligence sources about operations conducted by other adversaries (US hacking operations).",
+            "source_chunk_index": 6
+        },
+        {
+            "t_id": "T1597.001",
+            "name": "Threat Intel Vendors",
+            "context_indicators": "Chinese cybersecurity companies 'regurgitated information from foreign vendors', indicating they obtained and used data from external threat intelligence sources rather than performing independent analysis or attribution of US-nexus hacking.",
+            "source_chunk_index": 7
+        },
+        {
+            "t_id": "T1683.001",
+            "name": "Written Content",
+            "context_indicators": "China, through its state-linked entity Qi An Xin, published reports analyzing leaked tools of US operators. These reports were released alongside state media coverage, including corresponding English-language articles from Global Times, a nationalist state media outlet. This pattern of accompanying cyber threat intel publications about US hacking with Global Times articles indicates the creation and tailoring of written materials to support a new media strategy.",
+            "source_chunk_index": 13
+        },
+        {
+            "t_id": "T1597.001",
+            "name": "Threat Intel Vendors",
+            "context_indicators": "The PRC's Ministry of Foreign Affairs spokesperson announced Qihoo360's two-year-old report detailing alleged US hacking. Additionally, China's National Computer Virus Emergency Response Center (CVERC) issued reports detailing previously leaked US backdoors and tools, such as NOPEN and HIVE. This demonstrates the adversary (PRC) leveraging information from threat intelligence vendors (Qihoo360) and their own national cyber defense agency (CVERC) to gather and disseminate information about another nation's (US) cyber activities.",
+            "source_chunk_index": 14
+        },
+        {
+            "t_id": "T1591",
+            "name": "Gather Victim Org Information",
+            "context_indicators": "The report mentions 'CVERC AND ANTIY RELEASE REPORT ON LEAKED US CAPABILITY NOPEN', indicating that information about a US capability was obtained and subsequently disclosed. Additionally, 'QIH00360 RE-RELEASES REPORT ON CIA 11-YEAR CAMPAIGN' and 'CVERC AND QIH00360 RELEASE \"EMPIRE OF HACKING\"' suggest the gathering and public dissemination of intelligence related to other organizations' operations and capabilities.",
+            "source_chunk_index": 15
+        },
+        {
+            "t_id": "T1683.001",
+            "name": "Written Content",
+            "context_indicators": "The PRC created and disseminated written materials, including a 'CVERC piece focused on old, leaked tools' and 'ACIDFOX reporting'. State media, such as Global Times, published articles mentioning the NSA in connection to hacking tools or operations, and the PRC named its first victim of US hacking. These written materials were used to push 'US hacking into public discourse'.",
+            "source_chunk_index": 16
+        },
+        {
+            "t_id": "T1683.001",
+            "name": "Written Content",
+            "context_indicators": "The authors offered a second lurid detail in their report, and the State Council Information Office released an English language piece on the report to help promulgate its content. This demonstrates the creation and tailoring of written materials to support their operations and gain traction.",
+            "source_chunk_index": 19
+        },
+        {
+            "t_id": "T1589.003",
+            "name": "Employee Names",
+            "context_indicators": "The report claimed that CVERC and Qihoo360 had identified 13 US operators tasked with the mission, promising to reveal their identities. This indicates the gathering of specific individuals' names (operators) for potential future use or disclosure.",
+            "source_chunk_index": 19
+        },
+        {
+            "t_id": "T1683.001",
+            "name": "Written Content",
+            "context_indicators": "China will make claims of foreign spying without ever releasing public indictments, and those allegations may be periodically confirmed or denied by other governments. This describes the creation of claims and allegations as a form of written content used in intelligence operations.",
+            "source_chunk_index": 28
+        }
+    ]
+}
