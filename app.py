@@ -113,18 +113,33 @@ if selected_report:
             df_vis["tactic"] = df_vis["tactic"].str.split(", ")
             df_vis = df_vis.explode("tactic")
             
+            # Define canonical MITRE ATT&CK tactic order
+            mitre_tactics = [
+                "Reconnaissance", "Resource Development", "Initial Access", "Execution", 
+                "Persistence", "Privilege Escalation", "Defense Evasion", "Credential Access", 
+                "Discovery", "Lateral Movement", "Collection", "Command And Control", 
+                "Exfiltration", "Impact"
+            ]
+            
             # Count frequency of each T-ID and Tactic combination
             ttp_counts = df_vis.groupby(['tactic', 't_id', 'name']).size().reset_index(name='Count')
+            
+            # Apply custom order mapping for correct MITRE sequential timeline
+            ttp_counts['tactic_order'] = ttp_counts['tactic'].map(lambda x: mitre_tactics.index(x) if x in mitre_tactics else 99)
+            ttp_counts = ttp_counts.sort_values(['tactic_order', 't_id'])
             
             fig = px.bar(ttp_counts, x='t_id', y='Count', color='tactic', 
                          title="Frequency of Extracted Techniques by Tactic", 
                          hover_data=['name', 'tactic'],
-                         category_orders={'tactic': sorted(ttp_counts['tactic'].unique())},
+                         category_orders={'tactic': mitre_tactics},
                          color_discrete_sequence=px.colors.qualitative.Set2)
                          
             # Optionally add a Treemap representation
             fig_tree = px.treemap(ttp_counts, path=['tactic', 't_id'], values='Count',
                                   title="Tactic to Technique Treemap")
+                                  
+            # Force the treemap to lay out left-to-right (dice) and preserve the chronological MITRE sort order
+            fig_tree.update_traces(tiling=dict(packing='dice'), sort=False)
             
             st.plotly_chart(fig, width='stretch')
             st.plotly_chart(fig_tree, width='stretch')
