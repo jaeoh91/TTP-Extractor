@@ -1,4 +1,6 @@
 import os
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+
 import json
 import argparse
 import time
@@ -53,7 +55,7 @@ def analyze_report(pdf_path: str, output_path: str = None):
         print(f"Loaded {len(key_manager.keys)} API key(s) for rotation.")
     except Exception as e:
         print(f"❌ {e}")
-        return
+        raise Exception(f"Configuration Error: {e}")
     
     # 3. Extract TTPs
     print("\n--- Phase 3: TTP Extraction ---")
@@ -118,6 +120,7 @@ def analyze_report(pdf_path: str, output_path: str = None):
         
     print(f"✅ Analysis complete! Found {len(all_ttps)} discrete behaviors.")
     print(f"📁 Report saved to: {output_path}")
+    return output_path
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Automated MITRE ATT&CK extraction from CTI reports.")

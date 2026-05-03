@@ -1,3 +1,6 @@
+import os
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+
 import streamlit as st
 import json
 import base64
@@ -26,8 +29,12 @@ if uploaded_file is not None:
         # Run pipeline
         with st.spinner(f"Extracting TTPs from {uploaded_file.name}... (Watch terminal for exact progress)"):
             try:
-                analyze_report(str(pdf_path))
-                st.sidebar.success("Extraction complete! Report added to the dropdown below.")
+                output_file = analyze_report(str(pdf_path))
+                if output_file and os.path.exists(output_file):
+                    st.sidebar.success("Extraction complete! Reloading to show the new report...")
+                    st.rerun()
+                else:
+                    st.sidebar.error("Analysis finished, but no output file was generated.")
             except Exception as e:
                 st.sidebar.error(f"Error during extraction: {e}")
 
@@ -125,8 +132,19 @@ if selected_report:
             if pdf_path.exists():
                 with open(pdf_path, "rb") as f:
                     base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+                
+                # Using <iframe> is often the preferred method, but some browsers restrict data URIs in iframes.
+                # Since <embed> was blocked, let's revert to <iframe> as it usually works better in Streamlit.
                 pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="800" type="application/pdf"></iframe>'
                 st.markdown(pdf_display, unsafe_allow_html=True)
+                
+                # Add a fallback download button in case the browser restricts embedded PDFs
+                st.download_button(
+                    label="📥 Download Original PDF",
+                    data=base64.b64decode(base64_pdf),
+                    file_name=source_pdf_name,
+                    mime="application/pdf"
+                )
             else:
                 st.warning(f"The original PDF file '{source_pdf_name}' was not found in the 'data/raw_reports' directory. Ensure it is uploaded or present locally.")
 
