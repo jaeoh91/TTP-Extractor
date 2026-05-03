@@ -5,6 +5,7 @@ import streamlit as st
 import json
 import base64
 import pandas as pd
+import pypdfium2 as pdfium
 import plotly.express as px
 import os
 from pathlib import Path
@@ -130,18 +131,24 @@ if selected_report:
             pdf_path = Path("data/raw_reports") / source_pdf_name
             
             if pdf_path.exists():
+                st.info("Rendering PDF locally to bypass browser iframe security policies...")
+                
+                # Render using the existing pypdfium2 library from docling
+                pdf = pdfium.PdfDocument(str(pdf_path))
+                
+                # Display each page as an image to guarantee visualization works exactly
+                for page_idx in range(len(pdf)):
+                    page = pdf.get_page(page_idx)
+                    pil_image = page.render(scale=2).to_pil()
+                    st.image(pil_image, caption=f"Page {page_idx + 1}")
+                
+                # Still provide the raw download
                 with open(pdf_path, "rb") as f:
-                    base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-                
-                # Using <iframe> is often the preferred method, but some browsers restrict data URIs in iframes.
-                # Since <embed> was blocked, let's revert to <iframe> as it usually works better in Streamlit.
-                pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="800" type="application/pdf"></iframe>'
-                st.markdown(pdf_display, unsafe_allow_html=True)
-                
-                # Add a fallback download button in case the browser restricts embedded PDFs
+                    pdf_bytes = f.read()
+                    
                 st.download_button(
                     label="📥 Download Original PDF",
-                    data=base64.b64decode(base64_pdf),
+                    data=pdf_bytes,
                     file_name=source_pdf_name,
                     mime="application/pdf"
                 )
