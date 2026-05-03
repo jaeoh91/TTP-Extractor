@@ -28,10 +28,14 @@ class ExtractionResult(BaseModel):
 # Orchestration Logic
 # ---------------------------------------------------------
 
+import chromadb
+
 def get_vector_store():
     """Loads the Chroma vector database built in Phase 2."""
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embeddings)
+    # Use explicit Settings object to prevent Chroma singleton setting conflicts in Streamlit
+    client_settings = chromadb.config.Settings(anonymized_telemetry=False)
+    return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embeddings, client_settings=client_settings)
 
 def extract_ttps(chunk: str, vector_store, llm_client) -> ExtractionResult:
     """
