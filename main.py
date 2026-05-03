@@ -8,9 +8,9 @@ import time
 import re
 from tqdm import tqdm
 from dotenv import load_dotenv
+from google import genai
 from src.pipeline.parse_reports import parse_and_chunk_pdf
 from src.rag.extractor import get_vector_store, extract_ttps
-from google import genai
 
 # Load environment variables from .env file
 load_dotenv()

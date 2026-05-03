@@ -9,7 +9,12 @@ import pandas as pd
 import pypdfium2 as pdfium
 import plotly.express as px
 import os
+import sys
 from pathlib import Path
+
+# Explicitly add the project root to sys.path so modules like src.pipeline are found reliably on cloud instances
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from main import analyze_report
 
 st.set_page_config(page_title="TTP Extractor Visualizer", layout="wide")
