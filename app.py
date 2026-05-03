@@ -1,5 +1,6 @@
 import streamlit as st
 import json
+import base64
 import pandas as pd
 import plotly.express as px
 import os
@@ -80,33 +81,52 @@ if selected_report:
         # Handle field renaming compatibility (supporting older JSON that had 'justification')
         context_col = "context_indicators" if "context_indicators" in df.columns else "justification"
         
-        # Display raw data
-        st.subheader("Extracted TTPs")
-        st.dataframe(df[["tactic", "t_id", "name", context_col]], use_container_width=True)
+        # Create tabs to display extraction vs original PDF
+        tab1, tab2 = st.tabs(["Extracted Data & Visualizations", "Original PDF Preview"])
         
-        # Visualization
-        st.subheader("TTP Frequency Visualization (Grouped by Tactic)")
-        
-        # Explode by Tactic if multiple tactics are mapped per technique, 
-        # or we can just group by the concatenated strings, but exploding gives clearer counts.
-        # Since we joined them with ', ', let's explode them for visualization purely
-        df_vis = df.copy()
-        df_vis["tactic"] = df_vis["tactic"].str.split(", ")
-        df_vis = df_vis.explode("tactic")
-        
-        # Count frequency of each T-ID and Tactic combination
-        ttp_counts = df_vis.groupby(['tactic', 't_id', 'name']).size().reset_index(name='Count')
-        
-        fig = px.bar(ttp_counts, x='t_id', y='Count', color='tactic', 
-                     title="Frequency of Extracted Techniques by Tactic", 
-                     hover_data=['name', 'tactic'],
-                     category_orders={'tactic': sorted(ttp_counts['tactic'].unique())},
-                     color_discrete_sequence=px.colors.qualitative.Set2)
-                     
-        # Optionally add a Treemap representation
-        fig_tree = px.treemap(ttp_counts, path=['tactic', 't_id'], values='Count',
-                              title="Tactic to Technique Treemap")
-        
-        st.plotly_chart(fig, use_container_width=True)
-        st.plotly_chart(fig_tree, use_container_width=True)
+        with tab1:
+            # Display raw data
+            st.subheader("Extracted TTPs")
+            st.dataframe(df[["tactic", "t_id", "name", context_col]], width='stretch')
+            
+            # Visualization
+            st.subheader("TTP Frequency Visualization (Grouped by Tactic)")
+            
+            # Explode by Tactic if multiple tactics are mapped per technique, 
+            # or we can just group by the concatenated strings, but exploding gives clearer counts.
+            # Since we joined them with ', ', let's explode them for visualization purely
+            df_vis = df.copy()
+            df_vis["tactic"] = df_vis["tactic"].str.split(", ")
+            df_vis = df_vis.explode("tactic")
+            
+            # Count frequency of each T-ID and Tactic combination
+            ttp_counts = df_vis.groupby(['tactic', 't_id', 'name']).size().reset_index(name='Count')
+            
+            fig = px.bar(ttp_counts, x='t_id', y='Count', color='tactic', 
+                         title="Frequency of Extracted Techniques by Tactic", 
+                         hover_data=['name', 'tactic'],
+                         category_orders={'tactic': sorted(ttp_counts['tactic'].unique())},
+                         color_discrete_sequence=px.colors.qualitative.Set2)
+                         
+            # Optionally add a Treemap representation
+            fig_tree = px.treemap(ttp_counts, path=['tactic', 't_id'], values='Count',
+                                  title="Tactic to Technique Treemap")
+            
+            st.plotly_chart(fig, width='stretch')
+            st.plotly_chart(fig_tree, width='stretch')
+            
+        with tab2:
+            st.subheader("Interactive PDF Viewer")
+            source_pdf_name = data.get("source_report", selected_report.name.replace(".json", ".pdf"))
+            # In case the source_report is stored as an absolute path, we just get the name
+            source_pdf_name = Path(source_pdf_name).name
+            pdf_path = Path("data/raw_reports") / source_pdf_name
+            
+            if pdf_path.exists():
+                with open(pdf_path, "rb") as f:
+                    base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+                pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="800" type="application/pdf"></iframe>'
+                st.markdown(pdf_display, unsafe_allow_html=True)
+            else:
+                st.warning(f"The original PDF file '{source_pdf_name}' was not found in the 'data/raw_reports' directory. Ensure it is uploaded or present locally.")
 
