@@ -128,18 +128,18 @@ if selected_report:
             ttp_counts['tactic_order'] = ttp_counts['tactic'].map(lambda x: mitre_tactics.index(x) if x in mitre_tactics else 99)
             ttp_counts = ttp_counts.sort_values(['tactic_order', 't_id'])
             
-            fig = px.bar(ttp_counts, x='t_id', y='Count', color='tactic', 
+            # Combine t_id and name for better labeling
+            ttp_counts['technique_label'] = ttp_counts['t_id'] + ": " + ttp_counts['name']
+            
+            fig = px.bar(ttp_counts, x='technique_label', y='Count', color='tactic', 
                          title="Frequency of Extracted Techniques by Tactic", 
-                         hover_data=['name', 'tactic'],
+                         hover_data=['t_id', 'name', 'tactic'],
                          category_orders={'tactic': mitre_tactics},
                          color_discrete_sequence=px.colors.qualitative.Set2)
                          
             # Optionally add a Treemap representation
-            fig_tree = px.treemap(ttp_counts, path=['tactic', 't_id'], values='Count',
+            fig_tree = px.treemap(ttp_counts, path=['tactic', 'technique_label'], values='Count',
                                   title="Tactic to Technique Treemap")
-                                  
-            # Force the treemap to lay out left-to-right (dice) and preserve the chronological MITRE sort order
-            fig_tree.update_traces(tiling=dict(packing='dice'), sort=False)
             
             st.plotly_chart(fig, width='stretch')
             st.plotly_chart(fig_tree, width='stretch')
@@ -152,14 +152,17 @@ if selected_report:
             pdf_path = Path("data/raw_reports") / source_pdf_name
             
             if pdf_path.exists():
-                # Render using the existing pypdfium2 library from docling
-                pdf = pdfium.PdfDocument(str(pdf_path))
-                
-                # Display each page as an image to guarantee visualization works exactly
-                for page_idx in range(len(pdf)):
-                    page = pdf.get_page(page_idx)
-                    pil_image = page.render(scale=2).to_pil()
-                    st.image(pil_image, caption=f"Page {page_idx + 1}")
+                try:
+                    # Render using the existing pypdfium2 library from docling
+                    pdf = pdfium.PdfDocument(str(pdf_path))
+                    
+                    # Display each page as an image to guarantee visualization works exactly
+                    for page_idx in range(len(pdf)):
+                        page = pdf.get_page(page_idx)
+                        pil_image = page.render(scale=2).to_pil()
+                        st.image(pil_image, caption=f"Page {page_idx + 1}")
+                except Exception as e:
+                    st.error(f"Could not load the PDF for viewing. The file might be corrupted or in an unsupported format. Error: {e}")
                 
                 # Still provide the raw download
                 with open(pdf_path, "rb") as f:
