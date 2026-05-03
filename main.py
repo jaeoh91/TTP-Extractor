@@ -112,8 +112,12 @@ def analyze_report(pdf_path: str, output_path: str = None):
                         print(f"\n⚠️ Max retries reached for chunk {i} due to rate limits across all keys.")
                         break
                 else:
-                    print(f"\n⚠️ Error extracting from chunk {i}: {e}")
-                    break
+                    if attempt < max_retries - 1:
+                        print(f"\n⚠️ Non-rate-limit error on chunk {i} (Attempt {attempt+1}): {e} \nRetrying...")
+                        time.sleep(2)
+                    else:
+                        print(f"\n⚠️ Max retries reached or unrecoverable error extracting from chunk {i}: {e}")
+                        break
             
     # 4. Save Final Output
     print("\n--- Phase 4: Finalizing Output ---")

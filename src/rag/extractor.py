@@ -70,6 +70,7 @@ def extract_ttps(chunk: str, vector_store, llm_client, model_name: str = "gemini
             response_mime_type="application/json",
             response_schema=ExtractionResult,
             temperature=0.1,
+            max_output_tokens=8192,
         )
     )
     

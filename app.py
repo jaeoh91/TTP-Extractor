@@ -132,8 +132,6 @@ if selected_report:
             pdf_path = Path("data/raw_reports") / source_pdf_name
             
             if pdf_path.exists():
-                st.info("Rendering PDF locally to bypass browser iframe security policies...")
-                
                 # Render using the existing pypdfium2 library from docling
                 pdf = pdfium.PdfDocument(str(pdf_path))
                 
