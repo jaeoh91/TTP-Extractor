@@ -37,7 +37,7 @@ def get_vector_store():
     client_settings = chromadb.config.Settings(anonymized_telemetry=False)
     return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embeddings, client_settings=client_settings)
 
-def extract_ttps(chunk: str, vector_store, llm_client) -> ExtractionResult:
+def extract_ttps(chunk: str, vector_store, llm_client, model_name: str = "gemini-2.5-flash") -> ExtractionResult:
     """
     Retrieves context from ChromaDB and extracts structured TTPs from a text chunk.
     """
@@ -64,7 +64,7 @@ def extract_ttps(chunk: str, vector_store, llm_client) -> ExtractionResult:
     
     # Use Google GenAI native structured output to strictly enforce the Pydantic schema
     response = llm_client.models.generate_content(
-        model="gemini-2.5-flash", 
+        model=model_name, 
         contents=f"System: You carefully analyze text for cyber threat behaviors and output strictly constrained JSON.\n\nUser: {prompt}",
         config=types.GenerateContentConfig(
             response_mime_type="application/json",

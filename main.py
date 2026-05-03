@@ -69,6 +69,7 @@ def analyze_report(pdf_path: str, output_path: str = None):
     # 3. Extract TTPs
     print("\n--- Phase 3: TTP Extraction ---")
     all_ttps = []
+    current_model = "gemini-2.5-flash"
     
     # We loop through all the extracted chunks and ask the LLM if there are TTPs inside
     for i, chunk in enumerate(tqdm(chunks, desc="Analyzing chunks via LLM")):
@@ -76,7 +77,7 @@ def analyze_report(pdf_path: str, output_path: str = None):
         max_retries = len(key_manager.keys) * 2 
         for attempt in range(max_retries):
             try:
-                res = extract_ttps(chunk, db, client)
+                res = extract_ttps(chunk, db, client, model_name=current_model)
                 if res.contains_behavior: # Only process chunks where model confirmed threat activity
                     for ttp in res.ttps:
                         # Append findings with tracing info back to the chunk
@@ -93,10 +94,14 @@ def analyze_report(pdf_path: str, output_path: str = None):
                     if attempt < max_retries - 1:
                         # If we have tried all keys on this iteration, respect the cooldown before rotating again
                         if (attempt + 1) % len(key_manager.keys) == 0:
-                            delay_match = re.search(r"'retryDelay':\s*'(\d+)\w*'", error_str)
-                            delay = int(delay_match.group(1)) + 1 if delay_match else 60
-                            print(f"\n⏳ All keys currently rate limited. Waiting {delay}s before continuing rotation...")
-                            time.sleep(delay)
+                            if current_model == "gemini-2.5-flash":
+                                print(f"\n⚠️ All keys rate limited for Flash. Falling back to Gemini 2.5 Flash Lite...")
+                                current_model = "gemini-2.5-flash-lite"
+                            else:
+                                delay_match = re.search(r"'retryDelay':\s*'(\d+)\w*'", error_str)
+                                delay = int(delay_match.group(1)) + 1 if delay_match else 60
+                                print(f"\n⏳ All keys currently rate limited on Lite. Waiting {delay}s before continuing rotation...")
+                                time.sleep(delay)
                         
                         # Rotate the key and instantiate a fresh Client
                         new_key = key_manager.rotate_key()
