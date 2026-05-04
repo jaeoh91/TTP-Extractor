@@ -184,7 +184,7 @@ if selected_report:
                     pdf_bytes = f.read()
                     
                 st.download_button(
-                    label="📥 Download Original PDF",
+                    label="Download Original PDF",
                     data=pdf_bytes,
                     file_name=source_pdf_name,
                     mime="application/pdf"

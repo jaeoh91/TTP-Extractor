@@ -77,11 +77,6 @@ def extract_ttps(chunk: str, vector_store, llm_client, model_name: str = "gemini
     return ExtractionResult.model_validate_json(response.text)
 
 if __name__ == "__main__":
-    # --- Local Testing --- 
-    # To run this locally, you can either:
-    # 1. Use OpenAI: export OPENAI_API_KEY="sk-..."
-    # 2. Use Local LLM (Ollama): Enable Ollama's OpenAI API compatibility 
-    #    client = instructor.from_openai(OpenAI(base_url="http://localhost:11434/v1", api_key="ollama"))
     
     print("Loading Vector DB...")
     db = get_vector_store()
@@ -96,13 +91,13 @@ if __name__ == "__main__":
     print(f"\nTesting extraction on chunk:\n'{dummy_chunk}'\n")
     
     if api_key == "dummy-key":
-        print("⚠️ Waiting to run extraction... GEMINI_API_KEY is not set.")
+        print("Waiting to run extraction... GEMINI_API_KEY is not set.")
         print("Export your API key (export GEMINI_API_KEY='your_key') to see it in action,")
         print("or point the instructor client to a local Ollama server.")
     else:
         try:
             res = extract_ttps(dummy_chunk, db, client)
-            print("✅ EXTRACTION RESULT (Validated JSON):")
+            print("EXTRACTION RESULT (Validated JSON):")
             print(res.model_dump_json(indent=2))
         except Exception as e:
-            print(f"❌ Extraction test failed: {e}")
+            print(f"Extraction test failed: {e}")

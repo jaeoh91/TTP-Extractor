@@ -16,7 +16,7 @@ def parse_and_chunk_pdf(pdf_path: str, chunk_size: int = 1000, chunk_overlap: in
     
     # 1. Parse with Docling
     # Docling cleanly handles multi-column layouts, tables, and avoids arbitrary header/footer injections
-    # We disable OCR to avoid RapidOCR permission errors on Streamlit Cloud and speed up extraction.
+    # We disable OCR to avoid RapidOCR permission errors on Streamlit Cloud and speed up extraction. (this was so annoying)
     # CTI reports are generally primarily text-based PDFs.
     pipeline_options = PdfPipelineOptions()
     pipeline_options.do_ocr = False
@@ -33,6 +33,7 @@ def parse_and_chunk_pdf(pdf_path: str, chunk_size: int = 1000, chunk_overlap: in
     
     # 2. Chunk with LangChain
     # In CTI terms, behaviors are often described in paragraphs. We want paragraph-level semantic blocks.
+    # !Note that this design choice isn't perfect: a tactic may be described across two distinct chunks and require context from both to process
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
@@ -56,7 +57,7 @@ def parse_and_chunk_pdf(pdf_path: str, chunk_size: int = 1000, chunk_overlap: in
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(output_data, f, indent=4, ensure_ascii=False)
         
-    print(f"✅ Saved chunks to {output_file}")
+    print(f"Saved chunks to {output_file}")
     return output_file
 
 def main():
@@ -75,19 +76,19 @@ def main():
         if os.path.exists(args.file):
             parse_and_chunk_pdf(args.file, args.chunk_size, args.overlap)
         else:
-            print(f"❌ File not found: {args.file}")
+            print(f"File not found: {args.file}")
     
     elif args.batch:
         pdf_files = [f for f in os.listdir(RAW_REPORTS_DIR) if f.endswith((".pdf", ".PDF"))]
         if not pdf_files:
-            print(f"ℹ️ No PDFs found in {RAW_REPORTS_DIR}. Place CTI threat reports there first.")
+            print(f"ℹNo PDFs found in {RAW_REPORTS_DIR}. Place CTI threat reports there first.")
             return
             
         for pdf in pdf_files:
             parse_and_chunk_pdf(os.path.join(RAW_REPORTS_DIR, pdf), args.chunk_size, args.overlap)
             
     else:
-        print("💡 Please provide a PDF file or use the batch flag.")
+        print("Please provide a PDF file or use the batch flag.")
         print("Usage:")
         print("  python src/pipeline/parse_reports.py --file my_report.pdf")
         print("  python src/pipeline/parse_reports.py --batch")

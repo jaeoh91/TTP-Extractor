@@ -59,11 +59,11 @@ def main():
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             json.dump(techniques, f, indent=4, ensure_ascii=False)
             
-        print(f"\n✅ Successfully extracted {len(techniques)} techniques/sub-techniques.")
-        print(f"📁 Saved to {OUTPUT_FILE}")
+        print(f"\nSuccessfully extracted {len(techniques)} techniques/sub-techniques.")
+        print(f"Saved to {OUTPUT_FILE}")
         
     except Exception as e:
-        print(f"❌ Error during ingestion: {e}")
+        print(f"Error during ingestion: {e}")
 
 if __name__ == "__main__":
     main()

@@ -42,11 +42,11 @@ class APIKeyManager:
         
     def rotate_key(self):
         self.current_index = (self.current_index + 1) % len(self.keys)
-        print(f"\n🔄 Rate limit hit. Rotating API key (Switching to Key {self.current_index + 1}/{len(self.keys)})")
+        print(f"\nRate limit hit. Rotating API key (Switching to Key {self.current_index + 1}/{len(self.keys)})")
         return self.get_current_key()
 
 def analyze_report(pdf_path: str, output_path: str = None):
-    print(f"🚀 Starting TTP Extraction pipeline for: {pdf_path}")
+    print(f"Starting TTP Extraction pipeline for: {pdf_path}")
     
     # 1. Parse and Chunk
     print("\n--- Phase 1: Parsing & Chunking ---")
@@ -64,7 +64,7 @@ def analyze_report(pdf_path: str, output_path: str = None):
         client = genai.Client(api_key=key_manager.get_current_key())
         print(f"Loaded {len(key_manager.keys)} API key(s) for rotation.")
     except Exception as e:
-        print(f"❌ {e}")
+        print(f"{e}")
         raise Exception(f"Configuration Error: {e}")
     
     # 3. Extract TTPs
@@ -96,7 +96,7 @@ def analyze_report(pdf_path: str, output_path: str = None):
                         # If we have tried all keys on this iteration, respect the cooldown before rotating again
                         if (attempt + 1) % len(key_manager.keys) == 0:
                             if current_model == "gemini-2.5-flash":
-                                print(f"\n⚠️ All keys rate limited for Flash. Falling back to Gemini 2.5 Flash Lite...")
+                                print(f"\nAll keys rate limited for Flash. Falling back to Gemini 2.5 Flash Lite...")
                                 current_model = "gemini-2.5-flash-lite"
                             else:
                                 delay_match = re.search(r"'retryDelay':\s*'(\d+)\w*'", error_str)
@@ -109,14 +109,14 @@ def analyze_report(pdf_path: str, output_path: str = None):
                         client = genai.Client(api_key=new_key)
                         time.sleep(0.5) # Tiny internal API pad
                     else:
-                        print(f"\n⚠️ Max retries reached for chunk {i} due to rate limits across all keys.")
+                        print(f"\nMax retries reached for chunk {i} due to rate limits across all keys.")
                         break
                 else:
                     if attempt < max_retries - 1:
-                        print(f"\n⚠️ Non-rate-limit error on chunk {i} (Attempt {attempt+1}): {e} \nRetrying...")
+                        print(f"\nNon-rate-limit error on chunk {i} (Attempt {attempt+1}): {e} \nRetrying...")
                         time.sleep(2)
                     else:
-                        print(f"\n⚠️ Max retries reached or unrecoverable error extracting from chunk {i}: {e}")
+                        print(f"\nMax retries reached or unrecoverable error extracting from chunk {i}: {e}")
                         break
             
     # 4. Save Final Output
@@ -137,8 +137,8 @@ def analyze_report(pdf_path: str, output_path: str = None):
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(final_report, f, indent=4, ensure_ascii=False)
         
-    print(f"✅ Analysis complete! Found {len(all_ttps)} discrete behaviors.")
-    print(f"📁 Report saved to: {output_path}")
+    print(f"Analysis complete! Found {len(all_ttps)} discrete behaviors.")
+    print(f"Report saved to: {output_path}")
     return output_path
 
 if __name__ == "__main__":
@@ -150,4 +150,4 @@ if __name__ == "__main__":
     if os.path.exists(args.pdf):
         analyze_report(args.pdf, args.output)
     else:
-        print(f"❌ Target PDF not found: {args.pdf}")
+        print(f"Target PDF not found: {args.pdf}")
