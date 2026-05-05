@@ -156,8 +156,8 @@ if selected_report:
             fig_tree.update_traces(textfont=dict(size=18))
             fig_tree.update_layout(height=700)
             
-            st.plotly_chart(fig, use_container_width=True)
-            st.plotly_chart(fig_tree, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
+            st.plotly_chart(fig_tree, width='stretch')
             
         with tab2:
             st.subheader("Interactive PDF Viewer")
